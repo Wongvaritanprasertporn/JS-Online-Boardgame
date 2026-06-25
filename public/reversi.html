@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Reversi</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0px;
+            padding: 20px;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        h3 {
+            color: #333;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        #overlay h1 {
+            margin: 0;
+        }
+
+        #overlay p {
+            margin: 5px 0;
+        }
+
+        .board {
+            width: -moz-fit-content;
+            width: fit-content;
+            gap: 5px;
+            margin: 20px 0;
+            background-color: darkgreen;
+            display: grid;
+            grid-template-columns: repeat(8, 10vh);
+            grid-template-rows: repeat(8, 10vh);
+        }
+
+        .board>div {
+            width: 10vh;
+            height: 10vh;
+            outline: 3px solid black;
+            display: flex;
+        }
+
+        .black-disc {
+            width: 80%;
+            height: 80%;
+            background-color: black;
+            border-radius: 50%;
+            margin: auto;
+        }
+
+        .white-disc {
+            width: 80%;
+            height: 80%;
+            background-color: white;
+            border-radius: 50%;
+            margin: auto;
+        }
+
+        .cell {
+            width: 50px;
+            height: 50px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .cell:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 id="status">Waiting for an opponent...</h1>
+    <div id="overlay" onclick="off()" class="hidden-overlay"></div> <!-- Added overlay for gameover -->
+    <div class="board" id="board"></div>
+    <h3>Color: <span id="you"></span></h3> <!-- Added color display -->
+    <h3>Turn: <span id="turn"></span></h3>
+
+    <script>
+        const statusElement = document.getElementById('status');
+        const boardElement = document.getElementById('board');
+        const turnElement = document.getElementById('turn');
+        const colorElement = document.getElementById('you');
+
+        let playerColor = null;
+        let gameActive = false;
+
+        const socket = io();
+
+        socket.on('connect', () => {
+            console.log(`Connected with ID: ${socket.id}`);
+            statusElement.textContent = 'Searching for opponent...';
+            socket.emit('queue', 'reversi');
+        });
+
+        socket.on('queueWaiting', (data) => {
+            statusElement.textContent = data.message;
+        });
+
+        socket.on('roomFound', (payload) => {
+            playerColor = payload.color;
+            gameActive = true;
+            colorElement.textContent = playerColor;
+            statusElement.textContent = `Matched! You are ${playerColor}.`;
+            turnElement.textContent = payload.currentPlayer;
+            renderBoard(payload.board);
+        });
+
+
+        socket.on('updateGame', (payload) => {
+            turnElement.textContent = payload.currentPlayer;
+            renderBoard(payload.board);
+        });
+
+        socket.on('gameover', (pcs) => {
+            const overlayModal = document.getElementById('overlay');
+            overlayModal.style.display = 'block';
+            overlayModal.innerHTML = `
+                <div class="overlay-content">
+                    <h1>${pcs.white < pcs.black ? 'Black' : 'White'} won!</h1>
+                    <p>Black: ${pcs.black}</p>
+                    <p>White: ${pcs.white}</p>
+                    <button onclick="off()">Close</button>
+                </div>
+            `;
+        });
+
+        socket.on('player_leave', (data) => {
+            const overlayModal = document.getElementById('overlay');
+            overlayModal.style.display = 'block';
+            overlayModal.innerHTML = `
+                <div class="overlay-content">
+                    <h1>Opponent Disconnected</h1>
+                    <p>${data?.message || 'Your opponent left the game.'}</p>
+                    <button onclick="off()">Close</button>
+                </div>
+            `;
+        });
+
+        socket.on('errorMessage', (message) => {
+            statusElement.textContent = message;
+        });
+
+        function createBoard() {
+            boardElement.innerHTML = '';
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('cell');
+                    cell.dataset.row = row;
+                    cell.dataset.col = col;
+                    cell.addEventListener('click', () => move(row, col));
+                    const disc = document.createElement('div');
+                    disc.classList.add('disc');
+                    cell.appendChild(disc);
+                    boardElement.appendChild(cell);
+                }
+            }
+        }
+
+        function renderBoard(board) {
+            for (let row = 0; row < 8; row++) {
+                for (let col = 0; col < 8; col++) {
+                    const cell = boardElement.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+                    if (!cell) continue;
+                    const disc = cell.querySelector('.disc');
+                    disc.classList.remove('black-disc', 'white-disc');
+                    if (board[row][col] === 'white' || board[row][col] === 'w') {
+                        disc.classList.add('white-disc');
+                    } else if (board[row][col] === 'black' || board[row][col] === 'b') {
+                        disc.classList.add('black-disc');
+                    }
+                }
+            }
+        }
+
+        socket.on("error", (error) => {
+            document.write("Socket error:", error);
+        });
+        // Move handler
+        function move(row, col) {
+            if (!gameActive) {
+                statusElement.textContent = 'Still waiting for an opponent...';
+                return;
+            }
+            socket.emit('button_pressed', row, col);
+        }
+
+        function off() {
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        createBoard();
+    </script>
+</body>
+
+</html>

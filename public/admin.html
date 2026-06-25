@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Clients</title>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+</head>
+<body>
+  <h1>Admin</h1>
+  <div id="clients-container"></div>
+  <script>const adminSocket = io("/admin");
+
+// ฟังก์ชันสำหรับแสดงข้อมูลห้องเกม
+function renderOnlineRooms(onlineRooms) {
+  const container = document.getElementById("rooms-container");
+  container.innerHTML = ""; // ล้างข้อมูลเก่า
+
+  onlineRooms.forEach((room) => {
+    const roomDiv = document.createElement("div");
+    roomDiv.style.border = "1px solid black";
+    roomDiv.style.margin = "10px";
+    roomDiv.style.padding = "10px";
+
+    roomDiv.innerHTML = `
+      <h1>Room ID: ${room.room_uuid}</h1>
+      <p>Black Player: ${room.black_player || "Waiting..."}</p>
+      <p>White Player: ${room.white_player || "Waiting..."}</p>
+      <p>Current Turn: ${room.reversi.currentPlayer}</p>
+      <p>Game Over: ${room.reversi.isGameOver}</p>
+      <p>Board State:</p>
+      <pre>${JSON.stringify(room.reversi.mat, null, 2)}</pre>
+    `;
+
+    container.appendChild(roomDiv);
+  });
+}
+
+// ฟังก์ชันสำหรับแสดงข้อมูลผู้เล่น
+function renderClients(clients) {
+  const container = document.getElementById("clients-container");
+  container.innerHTML = ""; // ล้างข้อมูลเก่า
+
+  clients.forEach((client) => {
+    const clientDiv = document.createElement("div");
+    clientDiv.style.border = "1px solid black";
+    clientDiv.style.margin = "10px";
+    clientDiv.style.padding = "10px";
+
+    clientDiv.innerHTML = `
+      <h1>Client ID: ${client.id}</h1>
+      <p>Rooms: ${client.rooms.join(", ")}</p>
+    `;
+
+    container.appendChild(clientDiv);
+  });
+}
+
+// รับข้อมูลอัปเดตจากเซิร์ฟเวอร์
+adminSocket.on("onlineRoomUpdate", (onlineRooms) => {
+  renderOnlineRooms(onlineRooms);
+});
+
+adminSocket.on("clientUpdate", (clients) => {
+  renderClients(clients);
+});</script>
+</body>
+</html>
+
+<!--adminNamespace.emit("onlineRoomUpdate", await Room.find({ status: "active" })); // Notify admin
+
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, "admin_rooms.html"));
+    debug(chalk.green('GET /api/admin/rooms - HTML response'));
+  });
+
+  app.get('/api/admin/enqueue', async (req, res) => {
+    try {
+        await matchmaking(io, req.socket, Room, Reversi, adminNamespace);
+        debug(chalk.green('GET /api/admin/enqueue - Matchmaking initiated'));
+        res.status(200).send("Matchmaking initiated");
+    }
+    catch (error) {
+        debug(chalk.red(`Error in /api/admin/enqueue: ${error.message}`));
+        res.status(500).send("Internal Server Error");
+    }
+  });
+
+  app.get("/api/json/rooms", (req, res) => {
+    if (req.headers.accept && req.headers.accept.includes("application/json")) {
+      debug(chalk.green('GET /api/admin/rooms - JSON response'));
+      return res.json(room);
+    }
+  });
+
+  app.get("/api/json/client", (req, res) => {
+    if (req.headers.accept && req.headers.accept.includes("application/json")) {
+      debug(chalk.green('GET /api/admin/client - JSON response'));
+      return res.json(clients);
+    }
+
+  });
+  adminNamespace.on("connection", (socket) => {
+    debug(chalk.green(`Admin connected: ${socket.id}`));
+    socket.on("disconnect", () => {
+      debug(chalk.yellow(`Admin disconnected: ${socket.id}`));
+    });
+  });
+const adminNamespace = io.of("/admin");
+-->

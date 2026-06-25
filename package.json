@@ -1,0 +1,37 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "Online Board Game Server",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "debug": "node --inspect=0.0.0.0:9229 app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.2",
+    "dotenv": "^16.3.1",
+    "express": "^4.19.2",
+    "mongodb": "^6.16.0",
+    "mongoose": "^8.15.1",
+    "morgan": "^1.10.0",
+    "socket.io": "^4.8.1",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "delay": 1000,
+    "watch": ["app.js", "routes.js", "src/", "public/"],
+    "ignore": ["node_modules"],
+    "env": {
+      "PORT": 3000,
+      "NODE_ENV": "development"
+    }
+  }
+}
