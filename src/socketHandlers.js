@@ -3,8 +3,10 @@ const debug = require('debug')('socketHandlers');
 const { Reversi } = require('./reversi');
 const TwelveMensMorris = require('./twelve-mens-morris');
 const FiveFieldKono = require('./five-field-kono');
-const { Room } = require('./database');
+const { Room, CountryWin } = require('./database');
 const { v4: uuidv4 } = require('uuid');
+const https = require('https');
+const net = require('net');
 
 const supportedGames = ['reversi', 'twelvemorris', 'fivefieldkono'];
 const matchmakingQueue = supportedGames.reduce((queues, game) => {
@@ -17,7 +19,8 @@ function setupSocketHandlers(io) {
   io.on('connection', (socket) => {
     debug(chalk.green(`Client connected: ${socket.id}`));
 
-    socket.on('queue', async (gameType = 'reversi') => {
+    socket.on('queue', async (queueData = 'reversi') => {
+      const gameType = typeof queueData === 'string' ? queueData : queueData.gameType;
       await enqueuePlayer(io, socket, gameType);
     });
 
@@ -52,6 +55,7 @@ async function enqueuePlayer(io, socket, gameType = 'reversi') {
     return;
   }
 
+  socket.data.country = await detectCountry(socket);
   queuedPlayers.set(socket.id, gameType);
   matchmakingQueue[gameType].push(socket.id);
   socket.emit('queueWaiting', { message: 'Searching for opponent...' });
@@ -164,6 +168,44 @@ async function pairPlayers(io, gameType = 'reversi') {
   }
 }
 
+function normalizeCountry(country) {
+  const value = typeof country === 'string' ? country.trim() : '';
+  return value ? value.slice(0, 80) : 'Unknown';
+}
+
+async function detectCountry(socket) {
+  const headers = socket.handshake.headers;
+  const headerCountry = headers['cf-ipcountry'] || headers['x-vercel-ip-country'] || headers['x-country-code'];
+  if (headerCountry) return normalizeCountry(headerCountry.toUpperCase());
+
+  let ip = headers['x-forwarded-for']?.split(',')[0].trim() || socket.handshake.address || '';
+  if (ip.startsWith('::ffff:')) ip = ip.slice(7);
+  if (!net.isIP(ip) || ip === '127.0.0.1' || ip === '::1') return 'Unknown';
+
+  return new Promise((resolve) => {
+    const request = https.get(`https://ipapi.co/${encodeURIComponent(ip)}/country/`, { timeout: 2000 }, (response) => {
+      let body = '';
+      response.setEncoding('utf8');
+      response.on('data', (chunk) => { body += chunk; });
+      response.on('end', () => {
+        const country = body.trim().toUpperCase();
+        resolve(response.statusCode === 200 && /^[A-Z]{2}$/.test(country) ? country : 'Unknown');
+      });
+    });
+    request.on('error', () => resolve('Unknown'));
+    request.on('timeout', () => request.destroy());
+  });
+}
+
+async function recordWin(country) {
+  if (!country || country === 'Unknown') return;
+  await CountryWin.updateOne(
+    { country },
+    { $inc: { wins: 1 }, $setOnInsert: { country } },
+    { upsert: true }
+  );
+}
+
 async function handleMove(socket, row, col) {
   const roomUuid = socket.data.roomUuid;
   if (!roomUuid) {
@@ -211,6 +253,11 @@ async function handleMove(socket, row, col) {
 
   if (game.isGameOver) {
     const pcs = calculateScore(game.mat);
+    const winningColor = pcs.black > pcs.white ? 'black' : pcs.white > pcs.black ? 'white' : null;
+    if (winningColor) {
+      const winnerId = winningColor === 'black' ? room.black_player : room.white_player;
+      await recordWin(socket.server.sockets.sockets.get(winnerId)?.data.country);
+    }
     socket.server.to(roomUuid).emit('gameover', pcs);
     debug(chalk.yellow(`Game over in room ${roomUuid}`));
   }
@@ -276,6 +323,8 @@ async function handleTwelveMorrisMove(socket, data) {
   });
 
   if (game.isGameOver) {
+    const winnerId = game.winner === 'black' ? room.black_player : room.white_player;
+    await recordWin(socket.server.sockets.sockets.get(winnerId)?.data.country);
     socket.server.to(roomUuid).emit('gameover', {
       message: `${game.winner} wins!`
     });
@@ -340,6 +389,8 @@ async function handleGameMove(socket, data) {
       const message = game.winner 
         ? `${game.winner} wins!`
         : 'Draw!';
+      const winnerId = game.winner === 'black' ? room.black_player : room.white_player;
+      await recordWin(socket.server.sockets.sockets.get(winnerId)?.data.country);
       socket.server.to(roomUuid).emit('gameover', { message });
       debug(chalk.yellow(`Game over in room ${roomUuid}`));
     }
@@ -399,6 +450,8 @@ async function handleCapture(io, socket, captureData) {
   });
 
   if (game.isGameOver) {
+    const winnerId = game.winner === 'black' ? room.black_player : room.white_player;
+    await recordWin(socket.server.sockets.sockets.get(winnerId)?.data.country);
     socket.server.to(roomUuid).emit('gameover', {
       message: `${game.winner} wins!`
     });
@@ -455,7 +508,7 @@ async function handleDisconnect(io, socket) {
       room.white_player = '';
     }
     room.status = 'waiting';
-    room.markModified('reversi');
+    room.markModified('game_state');
     await room.save();
   }
 

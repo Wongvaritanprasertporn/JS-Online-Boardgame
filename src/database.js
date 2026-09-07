@@ -18,4 +18,11 @@ const matchmakingSchema = new mongoose.Schema({
 
 const MatchmakingQueue = mongoose.models.MatchmakingQueue || mongoose.model('MatchmakingQueue', matchmakingSchema);
 
-module.exports = { roomSchema, Room, matchmakingSchema, MatchmakingQueue };
+const countryWinSchema = new mongoose.Schema({
+  country: { type: String, required: true, unique: true, trim: true },
+  wins: { type: Number, default: 0, min: 0 }
+});
+
+const CountryWin = mongoose.models.CountryWin || mongoose.model('CountryWin', countryWinSchema);
+
+module.exports = { roomSchema, Room, matchmakingSchema, MatchmakingQueue, CountryWin };
