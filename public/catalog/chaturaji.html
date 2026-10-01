@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chaturaji</title>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <style>
+    :root { font-family: Georgia, serif; color: #f8f1df; background: #17202a; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; padding: 24px; background: radial-gradient(circle at center, #654321, #17202a 72%); }
+    main { width: min(720px, 100%); margin: auto; text-align: center; }
+    h1 { margin: 0 0 8px; }
+    #status { color: #ead9b0; }
+    .meta { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+    .board { width: min(88vw, 640px); aspect-ratio: 1; margin: 18px auto; display: grid; grid-template-columns: repeat(8, 1fr); border: 8px solid #352416; box-shadow: 0 10px 30px #0008; }
+    .cell { position: relative; display: grid; place-items: center; border: 1px solid #715338; background: #d9b878; cursor: pointer; font-size: clamp(18px, 5vw, 42px); }
+    .cell:nth-child(odd) { background: #8a603d; }
+    .cell.selected { outline: 4px solid #f4d35e; outline-offset: -4px; }
+    .cell.valid { box-shadow: inset 0 0 0 5px #74c69d; }
+    .piece { width: 72%; height: 72%; display: grid; place-items: center; border-radius: 50%; color: #fff; font-size: .58em; font-family: Arial, sans-serif; font-weight: bold; text-shadow: 1px 1px 2px #000; border: 2px solid #fff8; }
+    .red { background: #b23a48; } .blue { background: #2878b5; } .yellow { background: #c99a18; } .green { background: #39834f; }
+    #scores { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .score { padding: 6px 10px; border-radius: 5px; background: #0005; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Chaturaji</h1>
+    <div id="status">Connecting...</div>
+    <div class="meta"><span>You: <strong id="color">-</strong></span><span>Turn: <strong id="turn">-</strong></span></div>
+    <div id="scores"></div>
+    <div class="board" id="board" aria-label="Chaturaji board"></div>
+  </main>
+  <script>
+    const socket = io();
+    const boardElement = document.getElementById('board');
+    const statusElement = document.getElementById('status');
+    const colorElement = document.getElementById('color');
+    const turnElement = document.getElementById('turn');
+    const scoresElement = document.getElementById('scores');
+    let playerColor = null;
+    let state = null;
+    let selected = null;
+
+    const symbols = { king: 'K', elephant: 'E', horse: 'H', boat: 'B', pawn: 'P' };
+    socket.on('connect', () => socket.emit('queue', 'chaturaji'));
+    socket.on('queueWaiting', (data) => { statusElement.textContent = data.message + ' (4 players needed)'; });
+    socket.on('roomFound', (payload) => {
+      playerColor = payload.color;
+      colorElement.textContent = playerColor;
+      statusElement.textContent = 'Game started';
+      render(payload.gameState);
+    });
+    socket.on('updateGame', (payload) => render(payload.gameState));
+    socket.on('validMoves', (payload) => {
+      document.querySelectorAll('.valid').forEach((cell) => cell.classList.remove('valid'));
+      payload.moves.forEach((move) => getCell(move.row, move.col).classList.add('valid'));
+    });
+    socket.on('gameover', (result) => {
+      statusElement.textContent = `${result.winner || 'No one'} wins`;
+    });
+    socket.on('errorMessage', (message) => { statusElement.textContent = message; });
+
+    function getCell(row, col) { return boardElement.children[row * 8 + col]; }
+    function render(nextState) {
+      state = nextState;
+      turnElement.textContent = state.currentPlayer;
+      boardElement.innerHTML = '';
+      state.board.forEach((row, rowIndex) => row.forEach((piece, colIndex) => {
+        const cell = document.createElement('button');
+        cell.className = 'cell';
+        cell.type = 'button';
+        cell.addEventListener('click', () => selectCell(rowIndex, colIndex));
+        if (piece) {
+          const element = document.createElement('span');
+          element.className = `piece ${piece.color}`;
+          element.textContent = symbols[piece.type];
+          cell.appendChild(element);
+        }
+        boardElement.appendChild(cell);
+      }));
+      scoresElement.innerHTML = state.players.map((player) => `<span class="score ${player.color}">${player.color}: ${player.score}</span>`).join('');
+    }
+    function selectCell(row, col) {
+      const piece = state.board[row][col];
+      if (!selected) {
+        if (!piece || piece.color !== playerColor || state.currentPlayer !== playerColor) return;
+        selected = { row, col };
+        getCell(row, col).classList.add('selected');
+        socket.emit('getValidMoves', { from: selected });
+        return;
+      }
+      if (selected.row === row && selected.col === col) { selected = null; render(state); return; }
+      socket.emit('chaturajiMove', { from: selected, to: { row, col } });
+      selected = null;
+    }
+  </script>
+</body>
+</html>

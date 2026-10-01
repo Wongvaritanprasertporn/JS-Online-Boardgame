@@ -1,0 +1,8 @@
+class Achi {
+  constructor(state=null){if(state){Object.assign(this,state);this.board=state.board.slice();return;}this.board=Array(9).fill(null);this.currentPlayer='black';this.phase='placement';this.placed={black:0,white:0};this.isGameOver=false;this.winner=null;}
+  adjacent(i){return {0:[1,3,4],1:[0,2,4],2:[1,4,5],3:[0,4,6],4:[0,1,2,3,5,6,7,8],5:[2,4,8],6:[3,4,7],7:[4,6,8],8:[4,5,7]}[i]||[];}
+  mill(p){return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(line=>line.every(i=>this.board[i]===p));}
+  move(from,to){if(this.isGameOver)return{success:false,error:'Game over.'};if(this.phase==='placement'){if(this.board[to]||this.placed[this.currentPlayer]>=4)return{success:false,error:'Invalid placement.'};this.board[to]=this.currentPlayer;this.placed[this.currentPlayer]++;if(this.mill(this.currentPlayer)){this.isGameOver=true;this.winner=this.currentPlayer;}else{if(this.placed.black===4&&this.placed.white===4)this.phase='movement';this.currentPlayer=this.currentPlayer==='black'?'white':'black';}return{success:true};}if(this.board[from]!==this.currentPlayer||this.board[to]||!this.adjacent(from).includes(to))return{success:false,error:'Invalid move.'};this.board[from]=null;this.board[to]=this.currentPlayer;if(this.mill(this.currentPlayer)){this.isGameOver=true;this.winner=this.currentPlayer;}else this.currentPlayer=this.currentPlayer==='black'?'white':'black';return{success:true};}
+  toState(){return{board:this.board.slice(),currentPlayer:this.currentPlayer,phase:this.phase,placed:{...this.placed},isGameOver:this.isGameOver,winner:this.winner};}static fromState(s){return s?new Achi(s):new Achi();}
+}
+module.exports=Achi;

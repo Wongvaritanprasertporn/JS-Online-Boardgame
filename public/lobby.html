@@ -27,13 +27,13 @@
         }
 
         main {
-            width: min(760px, 100%);
-            text-align: center;
+            width: min(1120px, 100%);
+            text-align: left;
         }
 
         h1 {
             margin: 0 0 10px;
-            font-size: clamp(2rem, 6vw, 4rem);
+            font-size: 2.4rem;
         }
 
         .intro {
@@ -44,9 +44,20 @@
 
         .games {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-            gap: 16px;
+            grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+            gap: 24px;
         }
+
+        .catalog-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 0 0 20px; }
+        .catalog-controls label { display: grid; gap: 6px; color: #d8eadc; font-size: .9rem; }
+        .catalog-controls input, .catalog-controls select { min-height: 42px; padding: 8px 12px; color: #f5f1e8; background: #174630; border: 1px solid #8bb99a; border-radius: 4px; font: inherit; }
+        .catalog-controls input { width: min(420px, 100%); }
+        .catalog-controls select { min-width: 220px; }
+        #game-count { margin: 0 0 14px; color: #d8eadc; font-size: .9rem; }
+        .game-category { min-width: 0; border-top: 1px solid #8bb99a; padding-top: 12px; }
+        .game-category h2 { margin: 0 0 8px; font-size: 1.1rem; }
+        .game-category ul { margin: 0; padding: 0; list-style: none; }
+        .game-category li { border-bottom: 1px solid rgb(139 185 154 / 25%); }
 
         .statistics {
             margin-top: 32px;
@@ -71,34 +82,29 @@
         }
 
         .game-link {
-            display: flex;
-            min-height: 150px;
-            padding: 24px;
-            flex-direction: column;
-            justify-content: center;
-            gap: 10px;
-            color: #123524;
-            background: #f5f1e8;
-            border: 2px solid transparent;
-            border-radius: 10px;
+            display: block;
+            padding: 9px 2px;
+            color: #f5f1e8;
             text-decoration: none;
-            transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+            transition: color 140ms ease;
         }
 
         .game-link:hover,
         .game-link:focus-visible {
-            background: #ffffff;
-            border-color: #f2c14e;
-            transform: translateY(-4px);
-            outline: none;
+            color: #f2c14e;
+            text-decoration: underline;
         }
 
         .game-link strong {
-            font-size: 1.25rem;
+            font-size: 1rem;
         }
 
-        .game-link span {
-            color: #42634e;
+        @media (max-width: 560px) {
+            body { padding: 24px 16px; }
+            h1 { font-size: 2rem; }
+            .catalog-controls { align-items: stretch; flex-direction: column; }
+            .catalog-controls input, .catalog-controls select { width: 100%; }
+            .games { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -107,6 +113,15 @@
     <main>
         <h1>JS Online Boardgames</h1>
         <p class="intro">Choose a game. Your country is detected automatically.</p>
+        <div class="catalog-controls">
+            <label for="game-search">Search games
+                <input id="game-search" type="search" autocomplete="off" placeholder="Search by name">
+            </label>
+            <label for="game-category">Category
+                <select id="game-category"><option value="all">All categories</option></select>
+            </label>
+        </div>
+        <p id="game-count" aria-live="polite">Loading games...</p>
         <nav class="games" aria-label="Games">
             <a class="game-link" href="/reversi">
                 <strong>Reversi</strong>
@@ -117,6 +132,184 @@
             <a class="game-link" href="/five-field-kono">
                 <strong>Five-Field Kono</strong>
             </a>
+            <a class="game-link" href="/chaturaji">
+                <strong>Chaturaji</strong>
+                <span>Four-player early Indian chess.</span>
+            </a>
+            <a class="game-link" href="/xiangqi">
+                <strong>Xiangqi</strong>
+                <span>Chinese chess on a river board.</span>
+            </a>
+            <a class="game-link" href="/janggi">
+                <strong>Janggi</strong>
+                <span>Korean chess without a river.</span>
+            </a>
+            <a class="game-link" href="/sittuyin">
+                <strong>Sittuyin</strong>
+                <span>Burmese chess with deployment.</span>
+            </a>
+            <a class="game-link" href="/chaturanga">
+                <strong>Chaturanga</strong>
+                <span>Ancient Indian chess.</span>
+            </a>
+            <a class="game-link" href="/shatranj">
+                <strong>Shatranj</strong>
+                <span>Persian medieval chess.</span>
+            </a>
+            <a class="game-link" href="/makruk">
+                <strong>Makruk</strong>
+                <span>Thai chess with promoted pawns.</span>
+            </a>
+            <a class="game-link" href="/senterej">
+                <strong>Senterej</strong>
+                <span>Ethiopian chess with marshalling.</span>
+            </a>
+            <a class="game-link" href="/shatar">
+                <strong>Shatar</strong>
+                <span>Mongolian chess with the baras tiger.</span>
+            </a>
+            <a class="game-link" href="/shatra">
+                <strong>Shatra</strong>
+                <span>Altai chess with fortress reserves.</span>
+            </a>
+            <a class="game-link" href="/shogi">
+                <strong>Shogi</strong>
+                <span>Japanese chess with piece drops.</span>
+            </a>
+            <a class="game-link" href="/courier">
+                <strong>Courier Chess</strong>
+                <span>Medieval chess on a 12-file board.</span>
+            </a>
+            <a class="game-link" href="/hnefatafl">
+                <strong>Hnefatafl</strong>
+                <span>Viking chess with an escaping king.</span>
+            </a>
+            <a class="game-link" href="/tamerlane">
+                <strong>Tamerlane Chess</strong>
+                <span>Great chess on an expanded board.</span>
+            </a>
+            <a class="game-link" href="/heian-shogi">
+                <strong>Heian Shogi</strong>
+                <span>Early Japanese chess without drops.</span>
+            </a>
+            <a class="game-link" href="/gomoku">
+                <strong>Gomoku</strong>
+                <span>Make five stones in a row.</span>
+            </a>
+            <a class="game-link" href="/tic-tac-toe">
+                <strong>Tic-tac-toe</strong>
+                <span>Complete three in a row.</span>
+            </a>
+            <a class="game-link" href="/three-mens-morris"><strong>Three Men's Morris</strong></a>
+            <a class="game-link" href="/six-mens-morris"><strong>Six Men's Morris</strong></a>
+            <a class="game-link" href="/nine-mens-morris"><strong>Nine Men's Morris</strong></a>
+            <a class="game-link" href="/achi"><strong>Achi</strong><span>Ghanaian four-piece alignment.</span></a>
+            <a class="game-link" href="/shisima"><strong>Shisima</strong><span>Kenyan water-bug alignment.</span></a>
+            <a class="game-link" href="/dara"><strong>Dara</strong><span>West African three-in-a-row.</span></a>
+            <a class="game-link" href="/morabaraba"><strong>Morabaraba</strong><span>South African cattle Morris.</span></a>
+            <a class="game-link" href="/dala"><strong>Dala</strong><span>Sudanese herding alignment game.</span></a>
+            <a class="game-link" href="/picaria"><strong>Picaria</strong><span>Zuni three-piece alignment.</span></a>
+            <a class="game-link" href="/shax"><strong>Shax</strong><span>Somali Morris variant.</span></a>
+            <a class="game-link" href="/tant-fant"><strong>Tant Fant</strong><span>Indian home-row alignment.</span></a>
+            <a class="game-link" href="/tapatan"><strong>Tapatan</strong><span>Philippine adjacent Morris.</span></a>
+            <a class="game-link" href="/tsoro-yematatu"><strong>Tsoro Yematatu</strong><span>Zimbabwean jumping alignment.</span></a>
+            <a class="game-link" href="/wali"><strong>Wali</strong><span>African three-in-a-row capture game.</span></a>
+            <a class="game-link" href="/bagh-chal"><strong>Bagh-chal</strong><span>Nepali tigers and goats.</span></a>
+            <a class="game-link" href="/adugo"><strong>Adugo</strong><span>Brazilian jaguar hunt.</span></a>
+            <a class="game-link" href="/aadu-puli-attam"><strong>Aadu Puli Attam</strong><span>Indian lambs and tigers.</span></a>
+            <a class="game-link" href="/alquerque"><strong>Alquerque</strong><span>Medieval leap-capture game.</span></a>
+            <a class="game-link" href="/bagh-bandi"><strong>Bagh Bandi</strong><span>Bengali tigers and goats.</span></a>
+            <a class="game-link" href="/buga-shadara"><strong>Buga-shadara</strong><span>Tuvan deer and dogs.</span></a>
+            <a class="game-link" href="/sher-bakar"><strong>Sher-bakar</strong><span>Punjabi tiger hunt.</span></a>
+            <a class="game-link" href="/main-tapal-empat"><strong>Main Tapal Empat</strong><span>Malaysian tiger hunt.</span></a>
+            <a class="game-link" href="/rimau-rimau"><strong>Rimau-rimau</strong><span>Malaysian tiger hunt variants.</span></a>
+            <a class="game-link" href="/main-machan"><strong>Main Machan</strong><span>Iban women and children hunt game.</span></a>
+            <a class="game-link" href="/meurimueng"><strong>Meurimueng-rimueng</strong><span>Acehnese tiger hunt.</span></a>
+            <a class="game-link" href="/komikan"><strong>Komikan</strong><span>Mapuche puma hunt.</span></a>
+            <a class="game-link" href="/rithmomachia"><strong>Rithmomachia</strong><span>The medieval battle of numbers.</span></a>
+            <a class="game-link" href="/nine-holes"><strong>Nine Holes</strong><span>Three pieces with free movement.</span></a>
+            <a class="game-link" href="/wythoff"><strong>Wythoff's Game</strong><span>Mathematical two-pile strategy.</span></a>
+            <a class="game-link" href="/chopsticks"><strong>Chopsticks</strong><span>Strategic hand-state game.</span></a>
+            <a class="game-link" href="/jungle"><strong>Jungle</strong><span>Ranked animals, traps, and dens.</span></a>
+            <a class="game-link" href="/square-chess"><strong>Fangqi</strong><span>Form squares and capture stones.</span></a>
+            <a class="game-link" href="/mu-torere"><strong>Mū tōrere</strong><span>Eight-point star movement game.</span></a>
+            <a class="game-link" href="/pong-hau-ki"><strong>Pong Hau K’i</strong><span>Five-point blocking game.</span></a>
+            <a class="game-link" href="/bear-games"><strong>Bear games</strong><span>Hunters versus a blocked bear.</span></a>
+            <a class="game-link" href="/fox-and-hounds"><strong>Fox and Hounds</strong><span>Diagonal fox versus forward hounds.</span></a>
+            <a class="game-link" href="/hare-games"><strong>Hare games</strong><span>Hare versus forward and sideways hounds.</span></a>
+            <a class="game-link" href="/ugolkij"><strong>Ugolkij</strong><span>Russian corners with chained jumps.</span></a>
+            <a class="game-link" href="/fidchell"><strong>Fidchell</strong><span>7x7 sliding and custodial capture reconstruction.</span></a>
+            <a class="game-link" href="/armenian-checkers"><strong>Armenian Checkers</strong><span>Orthogonal draughts with kings.</span></a>
+            <a class="game-link" href="/astar"><strong>Astar</strong><span>Orthogonal leap-capture strategy.</span></a>
+            <a class="game-link" href="/kotu-ellima"><strong>Kotu Ellima</strong><span>Expanded Alquerque-style captures.</span></a>
+            <a class="game-link" href="/sixteen-soldiers"><strong>Sixteen Soldiers</strong><span>All-direction leap-capture game.</span></a>
+            <a class="game-link" href="/peralikatuma"><strong>Peralikatuma</strong><span>23-piece Alquerque-style game.</span></a>
+            <a class="game-link" href="/terhuchu"><strong>Terhuchu</strong><span>Ten-piece leap-capture game.</span></a>
+            <a class="game-link" href="/permainan-tabal"><strong>Permainan-Tabal</strong><span>Promoting leap-capture draughts.</span></a>
+            <a class="game-link" href="/awithlaknannai-mosona"><strong>Awithlaknannai Mosona</strong><span>Zuni compulsory-capture game.</span></a>
+            <a class="game-link" href="/bizingo"><strong>Bizingo</strong><span>Triangular-grid custodian capture.</span></a>
+            <a class="game-link" href="/awithlaknakwe"><strong>Awithlaknakwe</strong><span>Stone Warriors reconstruction.</span></a>
+            <a class="game-link" href="/butterfly"><strong>Butterfly</strong><span>19-point Gulugufe capture game.</span></a>
+            <a class="game-link" href="/lau-kata-kati"><strong>Lau kata kati</strong><span>Compulsory-capture butterfly variant.</span></a>
+            <a class="game-link" href="/dash-guti"><strong>Dash-guti</strong><span>21-point compulsory-capture game.</span></a>
+            <a class="game-link" href="/egara-guti"><strong>Egara-guti</strong><span>23-point compulsory-capture game.</span></a>
+            <a class="game-link" href="/felli"><strong>Felli</strong><span>13-point Mullah capture variant.</span></a>
+            <a class="game-link" href="/four-field-kono"><strong>Four-field Kono</strong><span>4x4 own-piece jump capture.</span></a>
+            <a class="game-link" href="/gala"><strong>Gala</strong><span>7x7 placement and custodian capture.</span></a>
+            <a class="game-link" href="/yote"><strong>Yoté</strong><span>5x6 placement and jump capture.</span></a>
+            <a class="game-link" href="/seega"><strong>Seega</strong><span>5x5 placement and center capture.</span></a>
+            <a class="game-link" href="/high-jump"><strong>High Jump</strong><span>5x5 sanctuary leap capture.</span></a>
+            <a class="game-link" href="/italian-damone"><strong>Italian Damone</strong><span>Ranked draughts and promotion.</span></a>
+            <a class="game-link" href="/italian-checkers"><strong>Italian Checkers</strong><span>Mandatory maximum-capture draughts.</span></a>
+            <a class="game-link" href="/jul-gonu"><strong>Jul-gonu</strong><span>4x4 custodian capture game.</span></a>
+            <a class="game-link" href="/keny"><strong>Keny</strong><span>Caucasian checkers with peppers.</span></a>
+            <a class="game-link" href="/kharbaga"><strong>Kharbaga</strong><span>Forward men and Mullah promotion.</span></a>
+            <a class="game-link" href="/kolowis-awithlaknannai"><strong>Kolowis Awithlaknannai</strong><span>Three-row compulsory capture.</span></a>
+            <a class="game-link" href="/liberian-queah"><strong>Liberian Queah</strong><span>Reserve-resupply capture game.</span></a>
+            <a class="game-link" href="/mak-yek"><strong>Mak-yek</strong><span>Orthogonal custodian capture.</span></a>
+            <a class="game-link" href="/ming-mang"><strong>Ming mang</strong><span>Rook movement and reserve capture.</span></a>
+            <a class="game-link" href="/pretwa"><strong>Pretwa</strong><span>Concentric-ring compulsory capture.</span></a>
+            <a class="game-link" href="/sahkku"><strong>Sáhkku</strong><span>Running-fight dice and king recruitment.</span></a>
+            <a class="game-link" href="/tiger-forty"><strong>Tiger game with forty</strong><span>Large optional-capture Alquerque.</span></a>
+            <a class="game-link" href="/surakarta"><strong>Surakarta</strong><span>Loop-capture strategy on 6x6.</span></a>
+            <a class="game-link" href="/tobit"><strong>Tobit</strong><span>Khakas draughts with flying kings.</span></a>
+            <a class="game-link" href="/asalto"><strong>Asalto</strong><span>Officers versus advancing rebels.</span></a>
+                    <a class="game-link" href="/catch-the-hare"><strong>Catch the Hare</strong><span>Hunters versus a capturing hare.</span></a>
+                    <a class="game-link" href="/demala-diviyan-keliya"><strong>Demala diviyan keliya</strong><span>Dogs versus leopards.</span></a>
+                    <a class="game-link" href="/chomp"><strong>Chomp</strong><span>Poisoned-block chocolate game.</span></a>
+                    <a class="game-link" href="/cram"><strong>Cram</strong><span>Impartial domino placement.</span></a>
+                    <a class="game-link" href="/renju"><strong>Renju</strong><span>Gomoku with black restrictions.</span></a>
+                    <a class="game-link" href="/turkish-draughts"><strong>Turkish Draughts</strong><span>Orthogonal draughts with flying kings.</span></a>
+                    <a class="game-link" href="/konane"><strong>Kōnane</strong><span>Hawaiian compulsory jumping.</span></a>
+                    <a class="game-link" href="/watermelon-chess"><strong>Watermelon Chess</strong><span>21-point surrounding game.</span></a>
+                    <a class="game-link" href="/zamma"><strong>Zamma</strong><span>African draughts reconstruction.</span></a>
+                    <a class="game-link" href="/ali-guli-mane"><strong>Ali Guli Mane</strong><span>Indian mancala sowing.</span></a>
+                    <a class="game-link" href="/chinese-checkers"><strong>Chinese Checkers</strong><span>Two-player jumping on a nine-by-nine board.</span></a>
+                    <a class="game-link" href="/hat-diviyan-keliya"><strong>Hat Diviyan Keliya</strong><span>Sri Lankan leopard and dogs hunt game.</span></a>
+                    <a class="game-link" href="/alea-evangelii"><strong>Alea Evangelii</strong><span>Historical tafl reconstruction on a Go-sized board.</span></a>
+                    <a class="game-link" href="/choko"><strong>Choko</strong><span>West African drop-and-move capture game.</span></a>
+                    <a class="game-link" href="/crossings"><strong>Crossings</strong><span>Abstract line-movement game from Sackson.</span></a>
+                    <a class="game-link" href="/kaooa"><strong>Kaooa</strong><span>Vulture vs. crows hunt game on a pentagram.</span></a>
+                    <a class="game-link" href="/cinc-camins"><strong>Cinc Camins</strong><span>Five-path abstract movement game.</span></a>
+                    <a class="game-link" href="/dablot-prejjesne"><strong>Dablot Prejjesne</strong><span>Sámi hunt and capture board game.</span></a>
+                    <a class="game-link" href="/daldos"><strong>Daldøs</strong><span>Nordic race and capture game.</span></a>
+                    <a class="game-link" href="/fanorona"><strong>Fanorona</strong><span>Madagascan approach-and-withdraw capture game.</span></a>
+                    <a class="game-link" href="/go"><strong>Go</strong><span>Territory and capture on a 7x7 board.</span></a>
+                    <a class="game-link" href="/grundys-game"><strong>Grundy's Game</strong><span>Impartial strip-splitting game.</span></a>
+                    <a class="game-link" href="/five-lines"><strong>Five Lines</strong><span>Connection game on a compact grid.</span></a>
+                    <a class="game-link" href="/bul"><strong>Bul</strong><span>Traditional race and capture game.</span></a>
+                    <a class="game-link" href="/circular-chess"><strong>Circular Chess</strong><span>Chess variant on a circular board.</span></a>
+                    <a class="game-link" href="/frisian-draughts"><strong>Frisian Draughts</strong><span>Draughts with diagonal and orthogonal captures.</span></a>
+                    <a class="game-link" href="/gonu"><strong>Gonu</strong><span>Traditional line-making game.</span></a>
+                    <a class="game-link" href="/ko-shogi"><strong>Ko Shogi</strong><span>Large-form Japanese chess variant.</span></a>
+                    <a class="game-link" href="/lambs-and-tigers"><strong>Lambs and Tigers</strong><span>Hunt game of escape and capture.</span></a>
+                    <a class="game-link" href="/leap-frog"><strong>Leap Frog</strong><span>Abstract jumping race game.</span></a>
+                    <a class="game-link" href="/luzhanqi"><strong>Luzhanqi</strong><span>Chinese army strategy game.</span></a>
+                    <a class="game-link" href="/mojo"><strong>Mojo</strong><span>Abstract alignment game.</span></a>
+                    <a class="game-link" href="/polis"><strong>Polis</strong><span>Ancient city strategy reconstruction.</span></a>
+                    <a class="game-link" href="/backgammon"><strong>Backgammon</strong><span>Race game of movement and blocking.</span></a>
+                    <a class="game-link" href="/senet"><strong>Senet</strong><span>Ancient Egyptian race game.</span></a>
+                    <a class="game-link" href="/mehen"><strong>Mehen</strong><span>Ancient Egyptian spiral board game.</span></a>
         </nav>
         <section class="statistics" aria-labelledby="statistics-heading">
             <h2 id="statistics-heading">Wins by country</h2>
@@ -124,6 +317,12 @@
         </section>
     </main>
     <script>
+        const catalogGames = ['en-gehe', 'fetaix', 'fitchneal', 'gol-skuish', 'indian-and-jackrabbits', 'irensei', 'len-choa', 'ludus-latrunculorum', 'makonn', 'paddles', 'pasang', 'ringo', 'szkwa', 'odds-and-evens', 'morra', 'domino', 'chinese-dominoes', 'khorol', 'mahjong', 'okey', 'chaupar', 'dayakattai', 'ashte-kashte', 'sho', 'edris-a-jin', 'zohn-ahl', 'yut', 'pachisi', 'patolli', 'yunnori', 'chopat', 'sugoroku', 'chadarangam', 'banqi', 'braede', 'ashtapada', 'grant-acedrex', 'international-draughts', 'malaysian-checkers', 'manchu-chess', 'great-chess', 'tibetan-weiqi', 'rock-paper-scissors', 'leopard-hunt-game', 'tuknanavuhpi', 'tukvnanawopi', 'pulijudam', 'rimau', 'sua-ghin-gnua', 'tiger-game', 'abacus-checkers', 'cinc-camins-variant', 'five-lines-variant', 'circular-chess-variant', 'paddles-game', 'pasang-game', 'ringo-game', 'szkwa-game', 'gyan-chauper', 'pallanguzhi', 'vai-lung-thlan', 'liubo', 'alkkagi', 'dominoes', 'chasing-the-girls', 'chowka-bhara', 'hounds-and-jackals', 'hyena-chase', 'knossos-board-game', 'lambs-and-tigers-game', 'lourche', 'nard', 'royal-game-of-ur', 'shengguan-tu', 'tab', 'toccategli', 'trictrac', 'verquere', 'chess', 'fortress-chess', 'four-handed-chess', 'grande-acedrex', 'jeson-mor', 'fangqi', 'canadian-checkers', 'checkers', 'fox-games', 'mlynek-nine-mens-morris', 'meurimueng-rimueng-do', 'meurimueng-rimueng-peuet-ploh', 'mak-yek-gala', 'aadu-puli-attam', 'tiger-and-buffaloes', 'tiger-game-played-with-forty'];
+        const catalogNavigation = document.querySelector('nav');
+        catalogNavigation.insertAdjacentHTML('beforeend', catalogGames.map((game) => {
+            const title = game.replace(/-/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase());
+            return `<a class="game-link" href="/${game}"><strong>${title}</strong><span>Catalog game available for online play.</span></a>`;
+        }).join(''));
         fetch('/api/statistics/wins-by-country')
             .then((response) => response.json())
             .then((statistics) => {
@@ -135,6 +334,87 @@
             .catch(() => {
                 document.getElementById('leaderboard').innerHTML = '<li>Statistics unavailable.</li>';
             });
+    </script>
+    <script>
+        const categoryDefinitions = [
+            ['Chess variants and tafl', 'chaturaji xiangqi janggi sittuyin chaturanga shatranj chess courier fortress-chess four-handed-chess grande-acedrex grant-acedrex hnefatafl shatar shatra shogi tamerlane heianshogi heian-shogi threeplayerchess tamerlane-chess circular-chess ko-shogi manchu-chess great-chess squarechess aleaevangelii ludus-latrunculorum'],
+            ['Morris and alignment', 'twelvemorris fivefieldkono threemorris sixmorris ninemorris achi shisima dara morabaraba dala picaria shax tantfant tapatan tsoro wali mutorere ponghauki nineholes gomoku tictactoe gomoku renju gonu five-lines mojo irensei fangqi'],
+            ['Hunt and escape', 'baghchal adugo aadupuli baghbandi bugashadara sherbakar rimau-rimau mainmachan meurimueng komikan beargames foxandhounds haregames catchthehare demaladiviyankeliya hatdiviyankeliya kaooa tigerforty tiger-game catch-the-hare leopard-hunt-game indian-and-jackrabbits lambs-and-tigers tuknanavuhpi tukvnanawopi pulijudam rimau sua-ghin-gnua tiger-game-played-with-forty tiger-and-buffaloes chasing-the-girls hounds-and-jackals hyena-chase'],
+            ['Draughts and capture', 'alquerque armeniancheckers astar kotuell sixteensoldiers peralikatuma terhuchu permainantabal bizingo awithlaknannai awithlaknakwe butterfly laukata dashguti egaraguti felli fourfieldkono highjump italiandamone italiancheckers julgonu keny kharbaga kolowisawithlaknannai liberianqueah makyek pretwa sahkku tigerforty surakarta tobit asalto checkers canadian-checkers international-draughts malaysian-checkers frisian-draughts dablot-prejjesne cinc-camins crossings choko zamma turkishdraughts'],
+            ['Mancala and sowing', 'aligulimane pallanguzhi en-gehe'],
+            ['Race, dice, and track games', 'backgammon chaupar dayakattai ashte-kashte yut pachisi patolli yunnori chopat sugoroku chadarangam mehen senet nard lourche royal-game-of-ur tab trictrac verquere daldos bul'],
+            ['Abstract and mathematical', 'reversi go fivefieldkono wythoff chopsticks chomp cram grundys-game rock-paper-scissors odds-and-evens morra'],
+            ['Traditional strategy games', '']
+        ].map(([name, ids]) => [name, new Set(ids.split(/\s+/).filter(Boolean))]);
+        const searchInput = document.getElementById('game-search');
+        const categoryInput = document.getElementById('game-category');
+        const gamesNavigation = document.querySelector('.games');
+        const gameCount = document.getElementById('game-count');
+        let lobbyGames = [];
+
+        function categoryFor(game) {
+            return categoryDefinitions.find(([, ids]) => ids.has(game.id))?.[0] || 'Traditional strategy games';
+        }
+
+        function renderGames() {
+            const query = searchInput.value.trim().toLocaleLowerCase();
+            const selectedCategory = categoryInput.value;
+            const filtered = lobbyGames.filter((game) => {
+                const matchesText = `${game.title} ${game.id}`.toLocaleLowerCase().includes(query);
+                return matchesText && (selectedCategory === 'all' || categoryFor(game) === selectedCategory);
+            });
+            const grouped = new Map();
+            for (const game of filtered) {
+                const category = categoryFor(game);
+                if (!grouped.has(category)) grouped.set(category, []);
+                grouped.get(category).push(game);
+            }
+
+            gamesNavigation.replaceChildren();
+            for (const [category, games] of grouped) {
+                const section = document.createElement('section');
+                section.className = 'game-category';
+                const heading = document.createElement('h2');
+                heading.textContent = `${category} (${games.length})`;
+                const list = document.createElement('ul');
+                for (const game of games) {
+                    const item = document.createElement('li');
+                    const link = document.createElement('a');
+                    link.className = 'game-link';
+                    link.href = game.href;
+                    link.textContent = game.title;
+                    item.appendChild(link);
+                    list.appendChild(item);
+                }
+                section.append(heading, list);
+                gamesNavigation.appendChild(section);
+            }
+            gameCount.textContent = `Showing ${filtered.length} of ${lobbyGames.length} games`;
+        }
+
+        fetch('/api/games')
+            .then((response) => {
+                if (!response.ok) throw new Error('Could not load games');
+                return response.json();
+            })
+            .then((games) => {
+                lobbyGames = games;
+                const categories = [...new Set(games.map(categoryFor))].sort();
+                for (const category of categories) {
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categoryInput.appendChild(option);
+                }
+                renderGames();
+            })
+            .catch(() => {
+                gamesNavigation.replaceChildren();
+                gameCount.textContent = 'Unable to load games.';
+            });
+
+        searchInput.addEventListener('input', renderGames);
+        categoryInput.addEventListener('change', renderGames);
     </script>
 </body>
 

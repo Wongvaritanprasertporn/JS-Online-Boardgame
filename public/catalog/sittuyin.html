@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Sittuyin</title>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <style>
+    :root { font-family: Georgia, serif; color: #342116; background: #d7c19a; } * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; padding: 20px; background: #d7c19a; } main { width: min(680px, 100%); margin: auto; text-align: center; }
+    h1 { margin: 0 0 8px; } #status { min-height: 24px; } .board { width: min(92vw, 620px); aspect-ratio: 1; margin: 18px auto; display: grid; grid-template-columns: repeat(8, 1fr); border: 7px solid #4d321e; background: #dcc18c; }
+    .cell { display: grid; place-items: center; min-width: 0; padding: 0; border: 1px solid #84613c; background: #e9d4a8; cursor: pointer; } .cell:nth-child(odd) { background: #d5b67b; }
+    .cell.selected { outline: 3px solid #b12525; outline-offset: -3px; } .cell.valid { box-shadow: inset 0 0 0 4px #4f9360; }
+    .piece { width: 76%; height: 76%; display: grid; place-items: center; border: 2px solid #4d321e; border-radius: 50%; background: #f6e9c9; font: bold clamp(14px, 4vw, 30px) Arial, sans-serif; }
+    .red { color: #b12525; } .black { color: #222; } select { padding: 8px; font: inherit; }
+  </style>
+</head>
+<body><main><h1>Sittuyin</h1><div id="status">Connecting...</div><p>You: <strong id="color">-</strong> | Turn: <strong id="turn">-</strong></p><label id="deployment">Deploy: <select id="piece"><option>king</option><option>general</option><option>elephant</option><option>horse</option><option>chariot</option></select></label><div class="board" id="board" aria-label="Sittuyin board"></div></main>
+<script>
+  const socket = io(); const boardElement = document.getElementById('board'); const statusElement = document.getElementById('status'); const colorElement = document.getElementById('color'); const turnElement = document.getElementById('turn'); const deployment = document.getElementById('deployment'); const pieceSelect = document.getElementById('piece');
+  const labels = { king: 'K', general: 'G', elephant: 'E', horse: 'H', chariot: 'R', pawn: 'P' }; let playerColor; let state; let selected;
+  socket.on('connect', () => socket.emit('queue', 'sittuyin')); socket.on('queueWaiting', (data) => { statusElement.textContent = data.message; });
+  socket.on('roomFound', (payload) => { playerColor = payload.color; colorElement.textContent = playerColor; statusElement.textContent = 'Deployment phase'; render(payload.gameState); }); socket.on('updateGame', (payload) => render(payload.gameState));
+  socket.on('validMoves', (payload) => { document.querySelectorAll('.valid').forEach((item) => item.classList.remove('valid')); payload.moves.forEach((move) => getCell(move.row, move.col).classList.add('valid')); }); socket.on('gameover', (payload) => { statusElement.textContent = `${payload.winner} wins`; }); socket.on('errorMessage', (message) => { statusElement.textContent = message; });
+  function getCell(row, col) { return boardElement.children[row * 8 + col]; }
+  function render(nextState) { state = nextState; turnElement.textContent = state.currentPlayer; deployment.hidden = state.phase !== 'deployment'; statusElement.textContent = state.phase === 'deployment' ? 'Deploy your army on your half.' : 'Game started'; boardElement.innerHTML = ''; state.board.forEach((row, rowIndex) => row.forEach((piece, colIndex) => { const button = document.createElement('button'); button.type = 'button'; button.className = 'cell'; button.addEventListener('click', () => selectCell(rowIndex, colIndex)); if (piece) { const span = document.createElement('span'); span.className = `piece ${piece.color}`; span.textContent = labels[piece.type]; button.appendChild(span); } boardElement.appendChild(button); })); }
+  function selectCell(row, col) { if (state.phase === 'deployment') { if (state.currentPlayer === playerColor && !state.board[row][col]) socket.emit('move', { type: pieceSelect.value, to: { row, col } }); return; } const piece = state.board[row][col]; if (!selected) { if (!piece || piece.color !== playerColor || state.currentPlayer !== playerColor) return; selected = { row, col }; getCell(row, col).classList.add('selected'); socket.emit('getValidMoves', { from: selected }); return; } socket.emit('move', { from: selected, to: { row, col } }); selected = null; }
+</script></body></html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Xiangqi</title>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <style>
+    :root { font-family: Georgia, serif; color: #2b1d0e; background: #dbc08a; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; padding: 20px; background: #dbc08a; }
+    main { width: min(720px, 100%); margin: auto; text-align: center; }
+    h1 { margin: 0 0 8px; }
+    #status { min-height: 24px; }
+    .board { width: min(94vw, 630px); aspect-ratio: 9 / 10; margin: 18px auto; display: grid; grid-template-columns: repeat(9, 1fr); grid-template-rows: repeat(10, 1fr); border: 7px solid #4b2b14; background: #d7ad68; }
+    .cell { position: relative; display: grid; place-items: center; min-width: 0; min-height: 0; padding: 0; border: 1px solid #795128; background: #e6c17d; cursor: pointer; }
+    .cell:nth-child(18)::after { content: '楚河'; position: absolute; left: 0; right: 0; top: 50%; color: #795128; font: 14px Arial, sans-serif; transform: translateY(-50%); pointer-events: none; }
+    .cell.selected { outline: 3px solid #d62828; outline-offset: -3px; }
+    .cell.valid { box-shadow: inset 0 0 0 4px #4a9d61; }
+    .piece { width: 78%; height: 78%; display: grid; place-items: center; border: 2px solid #4b2b14; border-radius: 50%; background: #f1d9a1; font: bold clamp(15px, 4vw, 33px) Arial, sans-serif; }
+    .red { color: #bd2026; } .black { color: #191919; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Xiangqi</h1>
+    <div id="status">Connecting...</div>
+    <p>You: <strong id="color">-</strong> | Turn: <strong id="turn">-</strong></p>
+    <div class="board" id="board" aria-label="Xiangqi board"></div>
+  </main>
+  <script>
+    const socket = io();
+    const boardElement = document.getElementById('board');
+    const statusElement = document.getElementById('status');
+    const colorElement = document.getElementById('color');
+    const turnElement = document.getElementById('turn');
+    const labels = { general: '將', advisor: '士', elephant: '象', horse: '馬', chariot: '車', cannon: '砲', soldier: '卒' };
+    let playerColor;
+    let state;
+    let selected;
+
+    socket.on('connect', () => socket.emit('queue', 'xiangqi'));
+    socket.on('queueWaiting', (data) => { statusElement.textContent = data.message; });
+    socket.on('roomFound', (payload) => { playerColor = payload.color; colorElement.textContent = playerColor; statusElement.textContent = 'Game started'; render(payload.gameState); });
+    socket.on('updateGame', (payload) => render(payload.gameState));
+    socket.on('validMoves', (payload) => { document.querySelectorAll('.valid').forEach((cell) => cell.classList.remove('valid')); payload.moves.forEach((move) => cell(move.row, move.col).classList.add('valid')); });
+    socket.on('gameover', (payload) => { statusElement.textContent = `${payload.winner} wins`; });
+    socket.on('errorMessage', (message) => { statusElement.textContent = message; });
+
+    function cell(row, col) { return boardElement.children[row * 9 + col]; }
+    function render(nextState) {
+      state = nextState;
+      turnElement.textContent = state.currentPlayer;
+      boardElement.innerHTML = '';
+      state.board.forEach((row, rowIndex) => row.forEach((piece, colIndex) => {
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'cell';
+        button.addEventListener('click', () => selectCell(rowIndex, colIndex));
+        if (piece) { const span = document.createElement('span'); span.className = `piece ${piece.color}`; span.textContent = labels[piece.type]; button.appendChild(span); }
+        boardElement.appendChild(button);
+      }));
+    }
+    function selectCell(row, col) {
+      const piece = state.board[row][col];
+      if (!selected) {
+        if (!piece || piece.color !== playerColor || state.currentPlayer !== playerColor) return;
+        selected = { row, col }; cell(row, col).classList.add('selected'); socket.emit('getValidMoves', { from: selected }); return;
+      }
+      socket.emit('move', { from: selected, to: { row, col } });
+      selected = null;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+const EDGES=[[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,8],[8,9],[9,10],[10,11],[11,12],[1,6],[3,6],[5,6],[7,6],[9,6],[11,6],[0,6],[12,6]];
+class LiberianQueah{
+ constructor(state=null){if(state){Object.assign(this,state);return;}this.board=Array(13).fill(null);[0,1,2,3].forEach((i)=>this.board[i]='black');[9,10,11,12].forEach((i)=>this.board[i]='white');this.reserve={black:6,white:6};this.mustPlace={black:false,white:false};this.currentPlayer='black';this.isGameOver=false;this.winner=null;}
+ neighbors(index){return EDGES.flatMap(([from,to])=>from===index?[to]:to===index?[from]:[]);}
+ jumps(from){const result=[],opponent=this.currentPlayer==='black'?'white':'black';for(const middle of this.neighbors(from))for(const to of this.neighbors(middle))if(to!==from&&this.board[middle]===opponent&&!this.board[to])result.push({to,over:middle});return result;}
+ move(from,to){const color=this.currentPlayer;const opponent=color==='black'?'white':'black';if(this.mustPlace[color]){if(this.reserve[color]<=0||this.board[to])return{success:false,error:'You must deploy a reserve piece.'};this.board[to]=color;this.reserve[color]--;this.mustPlace[color]=false;this.currentPlayer=opponent;return{success:true,deployed:true};}const piece=this.board[from],capture=this.jumps(from).find((entry)=>entry.to===to),adjacent=this.neighbors(from).includes(to)&&!this.board[to];if(this.isGameOver||piece!==color||(!adjacent&&!capture))return{success:false,error:'Invalid Queah move.'};this.board[to]=color;this.board[from]=null;if(capture){this.board[capture.over]=null;this.mustPlace[opponent]=this.reserve[opponent]>0;}if(!this.board.includes(opponent)&&this.reserve[opponent]===0){this.isGameOver=true;this.winner=color;}else this.currentPlayer=opponent;return{success:true,captured:Boolean(capture)};}
+ toState(){return{board:this.board.slice(),reserve:{...this.reserve},mustPlace:{...this.mustPlace},currentPlayer:this.currentPlayer,isGameOver:this.isGameOver,winner:this.winner};}
+ static fromState(state){return state?new LiberianQueah(state):new LiberianQueah();}
+}
+module.exports=LiberianQueah;

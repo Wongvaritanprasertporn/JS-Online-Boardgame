@@ -1,33 +1,37 @@
-# JS Online Reversi
+# JS Online Boardgame Platform
 
 ## Overview
-JS Online Reversi is a web-based implementation of the classic board game Reversi (also known as Othello). This project allows players to connect online, play against each other in real-time, and enjoy the strategic gameplay of Reversi.
+This project is a real-time multiplayer board-game platform. Dedicated game engines live under `src/catalog/engines/`; the broader catalog registry and fallback engines live under `src/catalog/`.
 
 ## Features
 - Real-time multiplayer gameplay using WebSockets.
 - Matchmaking system to pair players.
 - Game state management with the ability to handle player turns and game over conditions.
 - MongoDB integration for persistent storage of game rooms and matchmaking queues.
+- A lobby containing the catalog games and country win statistics.
+- Standalone catalog game pages and shared SPA assets live under `public/catalog/`.
+
+## Implementation status
+
+Games with a dedicated engine have game-specific rules and state handling. Entries routed through the catalog fallback are playable two-player grid games with generic placement and orthogonal movement; they are catalog placeholders until their historical rules are implemented individually. The lobby and server registry make this distinction possible without blocking matchmaking for the full list.
 
 ## Project Structure
 ```
-JS-Online-Reversi
+JS-Online-Boardgame
+├── app.js
+├── routes.js
 ├── src
-│   ├── app.js                # Main entry point of the application
-│   ├── database
-│   │   ├── connection.js     # MongoDB connection handling
-│   │   └── models
-│   │       └── Room.js       # Mongoose model for game rooms
-│   ├── reversi.js            # Game logic for Reversi
-│   ├── sockets
-│   │   └── socketHandlers.js  # Socket event handlers
-│   └── utils
-│       └── helpers.js        # Utility functions
+│   ├── database.js
+│   ├── socketHandlers.js
+│   └── catalog
+│       ├── catalog-game.js
+│       ├── catalog-games.js
+│       └── engines            # Dedicated board-game engines
 ├── public
-│   ├── index.html            # Main HTML file for the client-side application
-│   └── style.css             # CSS styles for the application
-├── package.json              # npm configuration file
-└── package-lock.json         # Dependency lock file
+│   ├── lobby.html
+│   └── catalog               # Individual game pages and shared SPA assets
+├── package.json
+└── package-lock.json
 ```
 
 ## Installation
@@ -43,7 +47,8 @@ JS-Online-Reversi
    ```
    npm install
    ```
-4. Set up your MongoDB database and update the connection settings in `src/database/connection.js`.
+4. Set up MongoDB and configure `MONGO_URI` in `.env` if the default connection is not suitable.
+5. Set `SITE_URL` to the public HTTPS origin (for example, `https://games.example.com`) so canonical links, `robots.txt`, and the sitemap use the production domain.
 
 ## Usage
 1. Start the server:
@@ -51,6 +56,10 @@ JS-Online-Reversi
    npm start
    ```
 2. Open your web browser and navigate to `http://localhost:3000` to access the game lobby.
+
+The Docker setup starts the Node server and MongoDB together with `docker compose up --build`.
+
+Search crawlers can discover the complete game catalog through `/sitemap.xml`; `/robots.txt` points crawlers to that sitemap. SEO metadata is rendered per game URL. Search ranking is not guaranteed and also depends on site authority, content quality, performance, and indexing.
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any enhancements or bug fixes.

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Alea Evangelii</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+      body { font-family: Georgia, serif; text-align: center; padding: 24px; background: #efe5cf; color: #351d10; }
+      .board { width: min(92vw, 760px); aspect-ratio: 1; margin: 20px auto; display: grid; grid-template-columns: repeat(19, minmax(0, 1fr)); border: 6px solid #3f2a13; background: #d7c39d; }
+      .cell { border: 1px solid rgba(63, 42, 19, 0.35); display: grid; place-items: center; background: #d7c39d; }
+      .cell.selected { outline: 3px solid #2d7a4a; outline-offset: -3px; }
+      .cell.valid { box-shadow: inset 0 0 0 4px rgba(45, 122, 74, 0.7); }
+      .piece { width: 70%; height: 70%; border-radius: 50%; border: 2px solid #301b0e; font-size: clamp(8px, 1vw, 14px); font-weight: bold; }
+      .attackers { background: #1d1d1d; color: #f2f2f2; }
+      .defenders { background: #9d2d2d; color: #f7f0f0; }
+      .king { background: #d1b34c; color: #1d1d1d; }
+    </style>
+  </head>
+  <body>
+    <h1>Alea Evangelii</h1>
+    <p>Reconstruction: a historical tafl-style game on a 19×19 Go-sized board; rules are approximate and historically uncertain.</p>
+    <div id="status">Connecting...</div>
+    <div id="board" class="board" aria-label="Alea Evangelii board"></div>
+    <script>
+      const socket = io();
+      const boardEl = document.getElementById('board');
+      const statusEl = document.getElementById('status');
+      let state = null;
+      let selected = null;
+
+      function renderBoard() {
+        boardEl.innerHTML = '';
+        for (let row = 0; row < 19; row++) {
+          for (let col = 0; col < 19; col++) {
+            const cell = document.createElement('button');
+            cell.type = 'button';
+            cell.className = 'cell';
+            cell.dataset.row = row;
+            cell.dataset.col = col;
+            const piece = state && state.board && state.board[row * 19 + col];
+            if (piece) {
+              const p = document.createElement('div');
+              p.className = 'piece ' + piece.color + (piece.type === 'king' ? ' king' : '');
+              p.textContent = piece.type === 'king' ? 'K' : piece.color === 'attackers' ? 'A' : 'D';
+              cell.appendChild(p);
+            }
+            if (selected && selected.row === row && selected.col === col) cell.classList.add('selected');
+            cell.addEventListener('click', () => {
+              if (!state) return;
+              if (selected == null) {
+                const piece = state.board[row * 19 + col];
+                if (piece && piece.color === state.currentPlayer) selected = { row, col };
+              } else {
+                socket.emit('move', { from: selected, to: { row, col } });
+                selected = null;
+              }
+              renderBoard();
+            });
+            boardEl.appendChild(cell);
+          }
+        }
+      }
+
+      socket.on('connect', () => {
+        socket.emit('queue', 'aleaevangelii');
+      });
+      socket.on('queueWaiting', (data) => {
+        statusEl.textContent = data.message;
+      });
+      socket.on('roomFound', (payload) => {
+        state = payload.gameState;
+        statusEl.textContent = 'Game started';
+        renderBoard();
+      });
+      socket.on('updateGame', (payload) => {
+        state = payload.gameState;
+        renderBoard();
+      });
+      socket.on('gameover', (payload) => {
+        statusEl.textContent = payload.message || 'Game over';
+      });
+    </script>
+  </body>
+</html>

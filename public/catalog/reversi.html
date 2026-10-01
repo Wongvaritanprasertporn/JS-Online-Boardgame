@@ -144,7 +144,7 @@
                     <h1>${pcs.white < pcs.black ? 'Black' : 'White'} won!</h1>
                     <p>Black: ${pcs.black}</p>
                     <p>White: ${pcs.white}</p>
-                    <button onclick="off()">Close</button>
+                    <button onclick="off()" >Close and return to menu</button>
                 </div>
             `;
         });
@@ -156,7 +156,7 @@
                 <div class="overlay-content">
                     <h1>Opponent Disconnected</h1>
                     <p>${data?.message || 'Your opponent left the game.'}</p>
-                    <button onclick="off()">Close</button>
+                    <button onclick="off()" >Close and return to menu</button>
                 </div>
             `;
         });
@@ -212,6 +212,7 @@
 
         function off() {
             document.getElementById('overlay').style.display = 'none';
+            window.location.href = '/lobby';
         }
 
         createBoard();
