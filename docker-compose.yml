@@ -6,12 +6,16 @@ services:
     container_name: reversi
     ports:
       - "3000:3000"
+      - "3443:3443"
     depends_on:
       mongo:
         condition: service_healthy
     environment:
       - MONGO_URI=mongodb://mongo:27017/reversi
       - PORT=3000
+      - HTTPS_PORT=3443
+      - SSL_KEY_PATH=${SSL_KEY_PATH:-}
+      - SSL_CERT_PATH=${SSL_CERT_PATH:-}
       - NODE_ENV=production
       - DEBUG=app
     restart: unless-stopped

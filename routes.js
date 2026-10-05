@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const { CountryWin } = require('./src/database');
 const CatalogGames = require('./src/catalog/catalog-games');
 const { supportedGames } = require('./src/socketHandlers');
+const gameDescriptions = require('./src/game-descriptions.json');
 
 const gamePathAliases = {
   twelvemorris: 'twelve-mens-morris', fivefieldkono: 'five-field-kono', heianshogi: 'heian-shogi',
@@ -114,8 +115,11 @@ function setupRoutes(app) {
     const gameId = gamesByPath.get(req.path.replace(/^\/+|\/+$/g, ''));
     if (!gameId) return next();
     const slug = gamePathAliases[gameId] || gameId;
-    const title = gameTitle(slug);
-    const description = `Play ${title} online in a real-time multiplayer match. Explore this classic board game, start a game, and challenge another player.`;
+    const known = gameDescriptions[slug];
+    const title = known ? known.name : gameTitle(slug);
+    const description = known
+      ? `Play ${title} online against another player. ${known.summary} Free real-time multiplayer, no download.`
+      : `Play ${title} online in a real-time multiplayer match. Explore this classic board game, start a game, and challenge another player.`;
     return sendSeoPage(req, res, path.join(__dirname, 'public', 'catalog', `${slug}.html`), title, description, `/${slug}`);
   });
 

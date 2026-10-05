@@ -1,0 +1,498 @@
+{
+  "chaturaji": {
+    "name": "Chaturaji",
+    "summary": "Four-player early Indian chess."
+  },
+  "xiangqi": {
+    "name": "Xiangqi",
+    "summary": "Chinese chess on a river board."
+  },
+  "janggi": {
+    "name": "Janggi",
+    "summary": "Korean chess without a river."
+  },
+  "sittuyin": {
+    "name": "Sittuyin",
+    "summary": "Burmese chess with deployment."
+  },
+  "chaturanga": {
+    "name": "Chaturanga",
+    "summary": "Ancient Indian chess."
+  },
+  "shatranj": {
+    "name": "Shatranj",
+    "summary": "Persian medieval chess."
+  },
+  "makruk": {
+    "name": "Makruk",
+    "summary": "Thai chess with promoted pawns."
+  },
+  "senterej": {
+    "name": "Senterej",
+    "summary": "Ethiopian chess with marshalling."
+  },
+  "shatar": {
+    "name": "Shatar",
+    "summary": "Mongolian chess with the baras tiger."
+  },
+  "shatra": {
+    "name": "Shatra",
+    "summary": "Altai chess with fortress reserves."
+  },
+  "shogi": {
+    "name": "Shogi",
+    "summary": "Japanese chess with piece drops."
+  },
+  "courier": {
+    "name": "Courier Chess",
+    "summary": "Medieval chess on a 12-file board."
+  },
+  "hnefatafl": {
+    "name": "Hnefatafl",
+    "summary": "Viking chess with an escaping king."
+  },
+  "tamerlane": {
+    "name": "Tamerlane Chess",
+    "summary": "Great chess on an expanded board."
+  },
+  "heian-shogi": {
+    "name": "Heian Shogi",
+    "summary": "Early Japanese chess without drops."
+  },
+  "gomoku": {
+    "name": "Gomoku",
+    "summary": "Make five stones in a row."
+  },
+  "tic-tac-toe": {
+    "name": "Tic-tac-toe",
+    "summary": "Complete three in a row."
+  },
+  "achi": {
+    "name": "Achi",
+    "summary": "Ghanaian four-piece alignment."
+  },
+  "shisima": {
+    "name": "Shisima",
+    "summary": "Kenyan water-bug alignment."
+  },
+  "dara": {
+    "name": "Dara",
+    "summary": "West African three-in-a-row."
+  },
+  "morabaraba": {
+    "name": "Morabaraba",
+    "summary": "South African cattle Morris."
+  },
+  "dala": {
+    "name": "Dala",
+    "summary": "Sudanese herding alignment game."
+  },
+  "picaria": {
+    "name": "Picaria",
+    "summary": "Zuni three-piece alignment."
+  },
+  "shax": {
+    "name": "Shax",
+    "summary": "Somali Morris variant."
+  },
+  "tant-fant": {
+    "name": "Tant Fant",
+    "summary": "Indian home-row alignment."
+  },
+  "tapatan": {
+    "name": "Tapatan",
+    "summary": "Philippine adjacent Morris."
+  },
+  "tsoro-yematatu": {
+    "name": "Tsoro Yematatu",
+    "summary": "Zimbabwean jumping alignment."
+  },
+  "wali": {
+    "name": "Wali",
+    "summary": "African three-in-a-row capture game."
+  },
+  "bagh-chal": {
+    "name": "Bagh-chal",
+    "summary": "Nepali tigers and goats."
+  },
+  "adugo": {
+    "name": "Adugo",
+    "summary": "Brazilian jaguar hunt."
+  },
+  "aadu-puli-attam": {
+    "name": "Aadu Puli Attam",
+    "summary": "Indian lambs and tigers."
+  },
+  "alquerque": {
+    "name": "Alquerque",
+    "summary": "Medieval leap-capture game."
+  },
+  "bagh-bandi": {
+    "name": "Bagh Bandi",
+    "summary": "Bengali tigers and goats."
+  },
+  "buga-shadara": {
+    "name": "Buga-shadara",
+    "summary": "Tuvan deer and dogs."
+  },
+  "sher-bakar": {
+    "name": "Sher-bakar",
+    "summary": "Punjabi tiger hunt."
+  },
+  "main-tapal-empat": {
+    "name": "Main Tapal Empat",
+    "summary": "Malaysian tiger hunt."
+  },
+  "rimau-rimau": {
+    "name": "Rimau-rimau",
+    "summary": "Malaysian tiger hunt variants."
+  },
+  "main-machan": {
+    "name": "Main Machan",
+    "summary": "Iban women and children hunt game."
+  },
+  "meurimueng": {
+    "name": "Meurimueng-rimueng",
+    "summary": "Acehnese tiger hunt."
+  },
+  "komikan": {
+    "name": "Komikan",
+    "summary": "Mapuche puma hunt."
+  },
+  "rithmomachia": {
+    "name": "Rithmomachia",
+    "summary": "The medieval battle of numbers."
+  },
+  "nine-holes": {
+    "name": "Nine Holes",
+    "summary": "Three pieces with free movement."
+  },
+  "wythoff": {
+    "name": "Wythoff's Game",
+    "summary": "Mathematical two-pile strategy."
+  },
+  "chopsticks": {
+    "name": "Chopsticks",
+    "summary": "Strategic hand-state game."
+  },
+  "jungle": {
+    "name": "Jungle",
+    "summary": "Ranked animals, traps, and dens."
+  },
+  "square-chess": {
+    "name": "Fangqi",
+    "summary": "Form squares and capture stones."
+  },
+  "mu-torere": {
+    "name": "Mū tōrere",
+    "summary": "Eight-point star movement game."
+  },
+  "pong-hau-ki": {
+    "name": "Pong Hau K’i",
+    "summary": "Five-point blocking game."
+  },
+  "bear-games": {
+    "name": "Bear games",
+    "summary": "Hunters versus a blocked bear."
+  },
+  "fox-and-hounds": {
+    "name": "Fox and Hounds",
+    "summary": "Diagonal fox versus forward hounds."
+  },
+  "hare-games": {
+    "name": "Hare games",
+    "summary": "Hare versus forward and sideways hounds."
+  },
+  "ugolkij": {
+    "name": "Ugolkij",
+    "summary": "Russian corners with chained jumps."
+  },
+  "fidchell": {
+    "name": "Fidchell",
+    "summary": "7x7 sliding and custodial capture reconstruction."
+  },
+  "armenian-checkers": {
+    "name": "Armenian Checkers",
+    "summary": "Orthogonal draughts with kings."
+  },
+  "astar": {
+    "name": "Astar",
+    "summary": "Orthogonal leap-capture strategy."
+  },
+  "kotu-ellima": {
+    "name": "Kotu Ellima",
+    "summary": "Expanded Alquerque-style captures."
+  },
+  "sixteen-soldiers": {
+    "name": "Sixteen Soldiers",
+    "summary": "All-direction leap-capture game."
+  },
+  "peralikatuma": {
+    "name": "Peralikatuma",
+    "summary": "23-piece Alquerque-style game."
+  },
+  "terhuchu": {
+    "name": "Terhuchu",
+    "summary": "Ten-piece leap-capture game."
+  },
+  "permainan-tabal": {
+    "name": "Permainan-Tabal",
+    "summary": "Promoting leap-capture draughts."
+  },
+  "awithlaknannai-mosona": {
+    "name": "Awithlaknannai Mosona",
+    "summary": "Zuni compulsory-capture game."
+  },
+  "bizingo": {
+    "name": "Bizingo",
+    "summary": "Triangular-grid custodian capture."
+  },
+  "awithlaknakwe": {
+    "name": "Awithlaknakwe",
+    "summary": "Stone Warriors reconstruction."
+  },
+  "butterfly": {
+    "name": "Butterfly",
+    "summary": "19-point Gulugufe capture game."
+  },
+  "lau-kata-kati": {
+    "name": "Lau kata kati",
+    "summary": "Compulsory-capture butterfly variant."
+  },
+  "dash-guti": {
+    "name": "Dash-guti",
+    "summary": "21-point compulsory-capture game."
+  },
+  "egara-guti": {
+    "name": "Egara-guti",
+    "summary": "23-point compulsory-capture game."
+  },
+  "felli": {
+    "name": "Felli",
+    "summary": "13-point Mullah capture variant."
+  },
+  "four-field-kono": {
+    "name": "Four-field Kono",
+    "summary": "4x4 own-piece jump capture."
+  },
+  "gala": {
+    "name": "Gala",
+    "summary": "7x7 placement and custodian capture."
+  },
+  "yote": {
+    "name": "Yoté",
+    "summary": "5x6 placement and jump capture."
+  },
+  "seega": {
+    "name": "Seega",
+    "summary": "5x5 placement and center capture."
+  },
+  "high-jump": {
+    "name": "High Jump",
+    "summary": "5x5 sanctuary leap capture."
+  },
+  "italian-damone": {
+    "name": "Italian Damone",
+    "summary": "Ranked draughts and promotion."
+  },
+  "italian-checkers": {
+    "name": "Italian Checkers",
+    "summary": "Mandatory maximum-capture draughts."
+  },
+  "jul-gonu": {
+    "name": "Jul-gonu",
+    "summary": "4x4 custodian capture game."
+  },
+  "keny": {
+    "name": "Keny",
+    "summary": "Caucasian checkers with peppers."
+  },
+  "kharbaga": {
+    "name": "Kharbaga",
+    "summary": "Forward men and Mullah promotion."
+  },
+  "kolowis-awithlaknannai": {
+    "name": "Kolowis Awithlaknannai",
+    "summary": "Three-row compulsory capture."
+  },
+  "liberian-queah": {
+    "name": "Liberian Queah",
+    "summary": "Reserve-resupply capture game."
+  },
+  "mak-yek": {
+    "name": "Mak-yek",
+    "summary": "Orthogonal custodian capture."
+  },
+  "ming-mang": {
+    "name": "Ming mang",
+    "summary": "Rook movement and reserve capture."
+  },
+  "pretwa": {
+    "name": "Pretwa",
+    "summary": "Concentric-ring compulsory capture."
+  },
+  "sahkku": {
+    "name": "Sáhkku",
+    "summary": "Running-fight dice and king recruitment."
+  },
+  "tiger-forty": {
+    "name": "Tiger game with forty",
+    "summary": "Large optional-capture Alquerque."
+  },
+  "surakarta": {
+    "name": "Surakarta",
+    "summary": "Loop-capture strategy on 6x6."
+  },
+  "tobit": {
+    "name": "Tobit",
+    "summary": "Khakas draughts with flying kings."
+  },
+  "asalto": {
+    "name": "Asalto",
+    "summary": "Officers versus advancing rebels."
+  },
+  "catch-the-hare": {
+    "name": "Catch the Hare",
+    "summary": "Hunters versus a capturing hare."
+  },
+  "demala-diviyan-keliya": {
+    "name": "Demala diviyan keliya",
+    "summary": "Dogs versus leopards."
+  },
+  "chomp": {
+    "name": "Chomp",
+    "summary": "Poisoned-block chocolate game."
+  },
+  "cram": {
+    "name": "Cram",
+    "summary": "Impartial domino placement."
+  },
+  "renju": {
+    "name": "Renju",
+    "summary": "Gomoku with black restrictions."
+  },
+  "turkish-draughts": {
+    "name": "Turkish Draughts",
+    "summary": "Orthogonal draughts with flying kings."
+  },
+  "konane": {
+    "name": "Kōnane",
+    "summary": "Hawaiian compulsory jumping."
+  },
+  "watermelon-chess": {
+    "name": "Watermelon Chess",
+    "summary": "21-point surrounding game."
+  },
+  "zamma": {
+    "name": "Zamma",
+    "summary": "African draughts reconstruction."
+  },
+  "ali-guli-mane": {
+    "name": "Ali Guli Mane",
+    "summary": "Indian mancala sowing."
+  },
+  "chinese-checkers": {
+    "name": "Chinese Checkers",
+    "summary": "Two-player jumping on a nine-by-nine board."
+  },
+  "hat-diviyan-keliya": {
+    "name": "Hat Diviyan Keliya",
+    "summary": "Sri Lankan leopard and dogs hunt game."
+  },
+  "alea-evangelii": {
+    "name": "Alea Evangelii",
+    "summary": "Historical tafl reconstruction on a Go-sized board."
+  },
+  "choko": {
+    "name": "Choko",
+    "summary": "West African drop-and-move capture game."
+  },
+  "crossings": {
+    "name": "Crossings",
+    "summary": "Abstract line-movement game from Sackson."
+  },
+  "kaooa": {
+    "name": "Kaooa",
+    "summary": "Vulture vs. crows hunt game on a pentagram."
+  },
+  "cinc-camins": {
+    "name": "Cinc Camins",
+    "summary": "Five-path abstract movement game."
+  },
+  "dablot-prejjesne": {
+    "name": "Dablot Prejjesne",
+    "summary": "Sámi hunt and capture board game."
+  },
+  "daldos": {
+    "name": "Daldøs",
+    "summary": "Nordic race and capture game."
+  },
+  "fanorona": {
+    "name": "Fanorona",
+    "summary": "Madagascan approach-and-withdraw capture game."
+  },
+  "go": {
+    "name": "Go",
+    "summary": "Territory and capture on a 7x7 board."
+  },
+  "grundys-game": {
+    "name": "Grundy's Game",
+    "summary": "Impartial strip-splitting game."
+  },
+  "five-lines": {
+    "name": "Five Lines",
+    "summary": "Connection game on a compact grid."
+  },
+  "bul": {
+    "name": "Bul",
+    "summary": "Traditional race and capture game."
+  },
+  "circular-chess": {
+    "name": "Circular Chess",
+    "summary": "Chess variant on a circular board."
+  },
+  "frisian-draughts": {
+    "name": "Frisian Draughts",
+    "summary": "Draughts with diagonal and orthogonal captures."
+  },
+  "gonu": {
+    "name": "Gonu",
+    "summary": "Traditional line-making game."
+  },
+  "ko-shogi": {
+    "name": "Ko Shogi",
+    "summary": "Large-form Japanese chess variant."
+  },
+  "lambs-and-tigers": {
+    "name": "Lambs and Tigers",
+    "summary": "Hunt game of escape and capture."
+  },
+  "leap-frog": {
+    "name": "Leap Frog",
+    "summary": "Abstract jumping race game."
+  },
+  "luzhanqi": {
+    "name": "Luzhanqi",
+    "summary": "Chinese army strategy game."
+  },
+  "mojo": {
+    "name": "Mojo",
+    "summary": "Abstract alignment game."
+  },
+  "polis": {
+    "name": "Polis",
+    "summary": "Ancient city strategy reconstruction."
+  },
+  "backgammon": {
+    "name": "Backgammon",
+    "summary": "Race game of movement and blocking."
+  },
+  "senet": {
+    "name": "Senet",
+    "summary": "Ancient Egyptian race game."
+  },
+  "mehen": {
+    "name": "Mehen",
+    "summary": "Ancient Egyptian spiral board game."
+  }
+}
